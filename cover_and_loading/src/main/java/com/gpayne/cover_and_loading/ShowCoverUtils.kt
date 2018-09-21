@@ -1,6 +1,9 @@
 package com.gpayne.cover_and_loading
 
 import android.app.Activity
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.os.Build
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -77,29 +80,34 @@ object ShowCoverUtils{
     }
 
     fun bindLoading(targetView: View,title: String? = null) {
-        val resource = targetView.context.resources
-        val id = resource.getIdentifier("gp_cover_layout_loading","layout",targetView.context.packageName)
-        val view = View.inflate(targetView.context, id,null)
-        val textId = resource.getIdentifier("tv_title","id",targetView.context.packageName)
-        view.findViewById<TextView>(textId).run {
+        dismiss(targetView)
+        val view = View.inflate(targetView.context, R.layout.gp_cover_layout_loading,null)
+        view.findViewById<TextView>(R.id.tv_title).run {
             this.visibility = if (title?.isEmpty() != false) View.GONE else View.VISIBLE
             this.text = title
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val progressBar = view.findViewById<ProgressBar>(R.id.pb_loading)
+            progressBar.indeterminateTintList = ColorStateList.valueOf(Color.parseColor("#ffffff"))
         }
         bind(targetView, view)
     }
 
     fun bindLoading(targetActivity:Activity,title: String? = null) {
         dismiss(targetActivity)
-        val resource = targetActivity.resources
         targetActivity.findViewById<ViewGroup>(android.R.id.content).also {
-            val id = resource.getIdentifier("gp_cover_layout_loading","layout",targetActivity.packageName)
-            val loadingView = View.inflate(targetActivity,id,null)
+            val loadingView = View.inflate(targetActivity,R.layout.gp_cover_layout_loading,null)
             loadingView.tag = coverTag
             loadingView.setOnClickListener { _ ->}
             loadingView.findViewById<TextView>(R.id.tv_title).also { textView ->
                 textView.text = title
                 textView.visibility = if (title?.isEmpty() != false) View.GONE else View.VISIBLE
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val progressBar = loadingView.findViewById<ProgressBar>(R.id.pb_loading)
+                progressBar.indeterminateTintList = ColorStateList.valueOf(Color.parseColor("#ffffff"))
+            }
+
             it.addView(loadingView,it.childCount, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER))
         }
     }
