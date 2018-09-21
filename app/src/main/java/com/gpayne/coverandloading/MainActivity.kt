@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         findViewById<TextView>(R.id.tv_title).setOnClickListener {
-            showLoading()
+            showLoading("...")
             Handler().postDelayed({
                 dismissLoading()
             },2000)
